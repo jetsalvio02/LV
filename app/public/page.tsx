@@ -7,8 +7,8 @@ import {
   LogOut,
   LogIn,
   CheckCircle2,
-  AlertCircle,
   Loader2,
+  AlertCircle,
 } from "lucide-react";
 import AuthModal from "../components/Auth_Modal";
 import Swal from "sweetalert2";
@@ -38,11 +38,10 @@ export default function PollVotePage() {
   const [selectedByPoll, setSelectedByPoll] = useState<Record<number, number>>(
     {},
   );
-
+  const [votedPollIds, setVotedPollIds] = useState<number[]>([]);
   const [activePollId, setActivePollId] = useState<number | null>(null);
   const [showVoteModal, setShowVoteModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -63,7 +62,14 @@ export default function PollVotePage() {
     fetch("/api/polls/active")
       .then((res) => res.json())
       .then(setPolls);
-  }, []);
+
+    /* LOAD VOTED POLLS */
+    if (isLoggedIn) {
+      fetch("/api/polls/voted")
+        .then((res) => res.json())
+        .then((data) => setVotedPollIds(data.votedPollIds ?? []));
+    }
+  }, [isLoggedIn]);
 
   const openVoteFlow = (pollId: number) => {
     if (!isLoggedIn) {
@@ -217,8 +223,9 @@ export default function PollVotePage() {
           </div>
         ) : (
           <div className="space-y-6 sm:space-y-8">
-            {polls.map((poll, index) => {
+            {polls.map((poll) => {
               const selected = selectedByPoll[poll.id];
+              const hasVoted = votedPollIds.includes(poll.id);
 
               return (
                 <div
@@ -261,6 +268,7 @@ export default function PollVotePage() {
                         {poll.options.map((option) => (
                           <button
                             key={option.id}
+                            disabled={hasVoted}
                             onClick={() =>
                               setSelectedByPoll((prev) => ({
                                 ...prev,
@@ -268,9 +276,11 @@ export default function PollVotePage() {
                               }))
                             }
                             className={`relative group/option px-4 sm:px-6 py-4 sm:py-5 rounded-xl border-2 transition-all duration-200 text-left font-medium ${
-                              selected === option.id
-                                ? "border-primary bg-primary/5 text-foreground"
-                                : "border-border/40 bg-muted/30 hover:bg-muted/50 text-foreground/80 hover:text-foreground"
+                              hasVoted
+                                ? "opacity-50 cursor-not-allowed bg-muted"
+                                : selected === option.id
+                                  ? "border-primary bg-primary/10"
+                                  : "border-border hover:bg-muted/50"
                             }`}
                           >
                             <div className="flex items-center gap-3">
@@ -293,16 +303,28 @@ export default function PollVotePage() {
 
                       {/* SUBMIT BUTTON */}
                       <button
-                        disabled={!selected}
+                        disabled={hasVoted || !selected}
                         onClick={() => openVoteFlow(poll.id)}
-                        className={`w-full py-3 sm:py-4 px-4 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 text-base sm:text-lg ${
-                          selected
-                            ? "bg-gradient-to-r from-primary to-accent text-primary-foreground hover:shadow-lg hover:shadow-primary/30"
-                            : "bg-muted text-muted-foreground/50 cursor-not-allowed"
-                        }`}
+                        className={`w-full py-4 rounded-xl font-semibold flex items-center justify-center gap-2
+                          ${
+                            hasVoted
+                              ? "bg-green-100 text-green-700 cursor-not-allowed"
+                              : selected
+                                ? "bg-gradient-to-r from-primary to-accent text-white"
+                                : "bg-muted text-muted-foreground cursor-not-allowed"
+                          }`}
                       >
-                        <span>Submit Vote</span>
-                        <ChevronRight className="w-5 h-5" />
+                        {hasVoted ? (
+                          <>
+                            <CheckCircle2 className="w-5 h-5" />
+                            Already Voted
+                          </>
+                        ) : (
+                          <>
+                            Submit Vote
+                            <ChevronRight className="w-5 h-5" />
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>
