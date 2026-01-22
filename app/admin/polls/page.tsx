@@ -185,6 +185,9 @@ export default function AdminPollsPage() {
                       <tr
                         key={poll.id}
                         className="hover:bg-gray-50 transition-colors"
+                        onClick={() =>
+                          router.push(`/admin/dashboard/${poll.id}`)
+                        }
                       >
                         <td className="px-6 py-4 font-medium text-gray-900">
                           {poll.title}

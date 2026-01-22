@@ -150,8 +150,8 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
             {loading
               ? "Please wait..."
               : mode === "login"
-              ? "Login"
-              : "Register"}
+                ? "Login"
+                : "Register"}
           </button>
         </form>
 

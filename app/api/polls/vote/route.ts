@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { database } from "@/lib/db";
 import { votes } from "@/lib/db/schema";
 import { cookies } from "next/headers";
-import { eq, and } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -10,9 +10,9 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 export async function POST(req: Request) {
   const { pollId, optionId } = await req.json();
 
-  const cookiesStore = await cookies();
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
 
-  const token = await cookiesStore.get("token")?.value;
   if (!token) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
@@ -20,9 +20,7 @@ export async function POST(req: Request) {
   let userId: number;
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as {
-      userId: number;
-    };
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
     userId = decoded.userId;
   } catch {
     return NextResponse.json({ message: "Invalid token" }, { status: 401 });
