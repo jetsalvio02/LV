@@ -44,8 +44,11 @@ export default function AdminResultsPage() {
       {/* Loading */}
       {loading && (
         <div className="flex justify-center py-20">
-          <div className="animate-pulse text-gray-500">
-            Loading poll results…
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="animate-pulse text-gray-500">
+              Loading poll results…
+            </div>
           </div>
         </div>
       )}
