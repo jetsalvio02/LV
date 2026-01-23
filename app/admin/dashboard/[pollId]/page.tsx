@@ -126,7 +126,18 @@ export default function PollDashboardPage() {
         </Card>
 
         <Card title="Votes Over Time">
-          <Line data={lineData} />
+          <Line
+            data={lineData}
+            options={{
+              scales: {
+                y: {
+                  ticks: {
+                    precision: 0,
+                  },
+                },
+              },
+            }}
+          />
         </Card>
       </div>
 

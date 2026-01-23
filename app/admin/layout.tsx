@@ -172,7 +172,7 @@ export default function AdminLayout({
         </header>
 
         {/* ================= PAGE CONTENT ================= */}
-        <main className="flex-1 p-6 md:p-8 overflow-auto bg-white">
+        <main className="flex-1 p-6 md:p-2 overflow-auto bg-white rounded">
           {children}
         </main>
       </div>

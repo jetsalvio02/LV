@@ -122,7 +122,7 @@ export default function AdminPollsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white rounded to-indigo-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -185,17 +185,29 @@ export default function AdminPollsPage() {
                       <tr
                         key={poll.id}
                         className="hover:bg-gray-50 transition-colors"
-                        onClick={() =>
-                          router.push(`/admin/dashboard/${poll.id}`)
-                        }
                       >
-                        <td className="px-6 py-4 font-medium text-gray-900">
+                        <td
+                          className="px-6 py-4 font-medium text-gray-900 cursor-pointer"
+                          onClick={() =>
+                            router.push(`/admin/dashboard/${poll.id}`)
+                          }
+                        >
                           {poll.title}
                         </td>
-                        <td className="px-6 py-4 text-gray-600 text-sm">
+                        <td
+                          className="px-6 py-4 text-gray-600 text-sm cursor-pointer"
+                          onClick={() =>
+                            router.push(`/admin/dashboard/${poll.id}`)
+                          }
+                        >
                           {getPollTypeLabel(poll.type)}
                         </td>
-                        <td className="px-6 py-4">
+                        <td
+                          className="px-6 py-4 cursor-pointer"
+                          onClick={() =>
+                            router.push(`/admin/dashboard/${poll.id}`)
+                          }
+                        >
                           <span
                             className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusStyles(poll.status)}`}
                           >
